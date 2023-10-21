@@ -35,7 +35,56 @@ var ArrayList = /** @class */ (function () {
     return ArrayList;
 }());
 var Expenses = /** @class */ (function () {
-    function Expenses() {
+    function Expenses(currency) {
+        this.count = 0;
+        this.finalCurrency = currency;
+        this.expenses = new ArrayList();
     }
+    Expenses.prototype.add = function (item) {
+        item.id = this.count;
+        this.count++;
+        this.expenses.add(item);
+        return true;
+    };
+    Expenses.prototype.get = function (index) {
+        return this.expenses.get(index);
+    };
+    Expenses.prototype.getItems = function () {
+        return this.expenses.getAll();
+    };
+    Expenses.prototype.getTotal = function () {
+        var _this = this;
+        var total = this.getItems().reduce(function (acc, item) {
+            return acc += _this.convertCurrency(item, _this.finalCurrency);
+        }, 0);
+        return "".concat(this.finalCurrency, " ").concat(total.toFixed(2).toString());
+    };
+    Expenses.prototype.remove = function (id) {
+        throw new Error("Method not implemented.");
+    };
+    Expenses.prototype.convertCurrency = function (item, currency) {
+        switch (item.cost.currency) {
+            case 'USD':
+                switch (currency) {
+                    case 'ARS':
+                        return item.cost.number * 1000;
+                        break;
+                    default:
+                        return item.cost.number;
+                }
+                break;
+            case 'ARS':
+                switch (currency) {
+                    case 'USD':
+                        return item.cost.number / 1000;
+                        break;
+                    default:
+                        return item.cost.number;
+                }
+                break;
+            default:
+                return 0;
+        }
+    };
     return Expenses;
 }());
