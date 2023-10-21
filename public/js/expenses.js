@@ -8,37 +8,11 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 };
-var ArrayList = /** @class */ (function () {
-    function ArrayList() {
-        this.items = [];
-    }
-    ArrayList.prototype.add = function (item) {
-        this.items.push(item);
-    };
-    ArrayList.prototype.get = function (index) {
-        var item = this.items.filter(function (x, i) {
-            return i === index;
-        });
-        if (item.length === 0) {
-            return null;
-        }
-        else {
-            return item[0];
-        }
-    };
-    ArrayList.prototype.creatFerom = function (value) {
-        this.items = __spreadArray([], value, true);
-    };
-    ArrayList.prototype.getAll = function () {
-        return this.items;
-    };
-    return ArrayList;
-}());
 var Expenses = /** @class */ (function () {
     function Expenses(currency) {
         this.count = 0;
-        this.finalCurrency = currency;
         this.expenses = new ArrayList();
+        this.finalCurrency = currency;
     }
     Expenses.prototype.add = function (item) {
         item.id = this.count;
@@ -54,13 +28,17 @@ var Expenses = /** @class */ (function () {
     };
     Expenses.prototype.getTotal = function () {
         var _this = this;
-        var total = this.getItems().reduce(function (acc, item) {
+        var total = this.expenses.getAll().reduce(function (acc, item) {
             return acc += _this.convertCurrency(item, _this.finalCurrency);
         }, 0);
-        return "".concat(this.finalCurrency, " ").concat(total.toFixed(2).toString());
+        return "".concat(this.finalCurrency, " $").concat(total.toFixed(2).toString());
     };
     Expenses.prototype.remove = function (id) {
-        throw new Error("Method not implemented.");
+        var items = this.getItems().filter(function (item) {
+            return item.id != id;
+        });
+        this.expenses.createFrom(items);
+        return true;
     };
     Expenses.prototype.convertCurrency = function (item, currency) {
         switch (item.cost.currency) {
@@ -87,4 +65,30 @@ var Expenses = /** @class */ (function () {
         }
     };
     return Expenses;
+}());
+var ArrayList = /** @class */ (function () {
+    function ArrayList() {
+        this.items = [];
+    }
+    ArrayList.prototype.add = function (item) {
+        this.items.push(item);
+    };
+    ArrayList.prototype.get = function (index) {
+        var item = this.items.filter(function (x, i) {
+            return i === index;
+        });
+        if (item.length === 0) {
+            return null;
+        }
+        else {
+            return item[0];
+        }
+    };
+    ArrayList.prototype.createFrom = function (value) {
+        this.items = __spreadArray([], value, true);
+    };
+    ArrayList.prototype.getAll = function () {
+        return this.items;
+    };
+    return ArrayList;
 }());
