@@ -6,8 +6,8 @@ interface Price {
 }
 
 interface ExpenseItem {
-    id: number,
-    titulo: string,
+    id?: number,
+    title: string,
     cost: Price
 }
 
